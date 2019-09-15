@@ -6,6 +6,15 @@
 	if($hourNow < 8) {
 		$partOfDay = "varane hommik";
 	}
+	if($hourNow == 12) {
+		$partOfDay = "keskpäev";
+	}
+	if($hourNow > 12) {
+		$partOfDay = "peale lõunat";
+	}
+	if($hourNow >= 20) {
+		$partOfDay = "hiline õhtu";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -32,6 +41,7 @@
   <?php
   echo "<p>Lehe avamise hetkel oli " .$partOfDay. ".</p>";
   ?>
+  <hr>
   <p>Ilusat uut kooliaastat!</p>
   
   <P>Kasutame php serverit, mille kohta saab infot <a href="serverinfo.php">siit</a>!</p>
