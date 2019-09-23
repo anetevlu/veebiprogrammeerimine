@@ -2,7 +2,9 @@
 <html lang="et">
 <head>
   <meta charset="utf-8">
-  <?php
-  echo "<title>" .$userName ." koolitöö</title>" 
+ <title> <?php
+  $title = "$userName koolitöö";
+  echo $title
   ?>
+  </title>
 </head>

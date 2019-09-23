@@ -1,8 +1,9 @@
 <?php
 	require("../../../config_vp.php");
+	require("functions_film.php");
 	$userName = "Anete Vaalu";
 	$dataBase = "if19_anete_va_1";
-	require("functions_film.php");
+	
 	$filmInfoHTML = readAllFilms(); //ehk panid funktsiooni käima
 	
 	
@@ -19,7 +20,7 @@
   <p>Praegu on andmebaasis järgmised filmid:</p>
   <?php
   //echo "Server: " .$serverHost .", kasutaja: " .$serverUsername;
-  //echo $filmInfoHTML;
+  echo $filmInfoHTML;
   ?>
 </body>
 </html>

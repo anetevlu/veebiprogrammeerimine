@@ -4,9 +4,11 @@
 	$picFileTypes = ["image/jpeg", "image/png"];
 	$fullTimeNow = date("d.m.Y H:i:s");
 	$hourNow = date("H");
-	
-	$weekdaysET = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
+	$monthNow = date("m");
 	$monthsET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
+	$weekdaysET = ["pühapäev", "esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev"];
+	$weekdayNow = date("w");
+	$monthCount = count($monthsET);
 	
 	$partOfDay = "hägune aeg";
 	if($hourNow < 8) {
@@ -82,7 +84,10 @@
   <?php
   echo $fullTimeNow;
   ?>
-  .</p>
+  <?php
+  echo "<p>Lehe avamise hetkel oli " .$weekdaysET[$weekdayNow]. ".</p>";
+  ?>
+  </p>
   <?php
   echo "<p>Lehe avamise hetkel oli " .$partOfDay. ".</p>";
   ?>
@@ -95,4 +100,10 @@
   }
   ?>
 </body>
+<footer>
+<hr>
+<h3>Kontaktinfo:</h3>
+<p>anetevlu@tlu.ee</p>
+<p>Narva mnt 25</p>
+</footer>
 </html>

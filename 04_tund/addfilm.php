@@ -10,7 +10,7 @@
 	if(isset($_POST["submitFilm"])){
 		//salvestame kui vähemalt pealkiri on olemas
 		if(!empty($_POST["filmTitle"])){
-		saveFilmInfo($_POST["filmTitle"], $_POST["filmYear"], $_POST["filmDuration"], $_POST["filmGenre"], $_POST["filmCompany"], $_POST[filmDirector]);
+		saveFilmInfo($_POST["filmTitle"], $_POST["filmYear"], $_POST["filmDuration"], $_POST["filmGenre"], $_POST["filmCompany"], $_POST["filmDirector"]);
 		}
 	}
 		
