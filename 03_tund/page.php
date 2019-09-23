@@ -5,7 +5,9 @@
 	$fullTimeNow = date("d.m.Y H:i:s");
 	$hourNow = date("H");
 	
-	$weekdaysET = [esmaspäev, teisipäev, kolmapäev, neljapäev, reede, laupäev, pühapäev]
+	$weekdaysET = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
+	$monthsET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
+	
 	$partOfDay = "hägune aeg";
 	if($hourNow < 8) {
 		$partOfDay = "varane hommik";
@@ -25,7 +27,7 @@
 	$semesterDuration = $semesterStart->diff($semesterEnd);
 	$today = new DateTime("now");
 	$fromSemesterStart = $semesterStart->diff($today);
-	//var_dump($fromSemesterStartsemesterStart);
+	//var_dump($fromSemesterStart);
 	$semesterInfoHTML = "<p>Siin peaks olema info semestri kulgemise kohta</p>";
 	$elapsedValue = $fromSemesterStart->format("%r%a");
 	$durationValue = $semesterDuration->format("%r%a");
@@ -39,7 +41,12 @@
 		$semesterInfoHTML .= "</meter>";
 		$semesterInfoHTML .="</p>";
 	}
-	
+	if ($elapsedValue < 0) {
+		$semesterInfoHTML = "<p>Semester ei ole veel alanud.</p>";
+	}
+	if ($elapsedValue > 103) {
+		$semesterInfoHTML = "<p>Semester on läbi!</p>";
+	}
 	//<img src="../photos/tlu_terra_600x400_1.jpg" alt="TLÜ Terra õppehoone"> <- see on html keeles pildi jaoks
 	//foto lisamine lehele
 	$allPhotos = [];
