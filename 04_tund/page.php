@@ -2,13 +2,17 @@
 	$userName = "Anete Vaalu";
 	$photoDir = "../photos/";
 	$picFileTypes = ["image/jpeg", "image/png"];
-	$fullTimeNow = date("d.m.Y H:i:s");
+	
+	$monthsET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
+	$weekdaysET = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
 	$hourNow = date("H");
 	$monthNow = date("m");
-	$monthsET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
-	$weekdaysET = ["pühapäev", "esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev"];
-	$weekdayNow = date("w");
-	$monthCount = count($monthsET);
+	$weekdayNow = date("N");
+	$dateNow = date("d");
+	$yearNow = date("Y");
+	$timeNow = date("H:i:s");
+	$fullTimeNow = date("d.m.Y H:i:s");
+	
 	
 	$partOfDay = "hägune aeg";
 	if($hourNow < 8) {
@@ -82,12 +86,13 @@
   <hr>
   <p>Lehe avamise hetkel oli aeg:
   <?php
-  echo $fullTimeNow;
+  //echo $fullTimeNow;
+	echo $weekdaysET[$weekdayNow - 1] .", " .$dateNow .". " .$monthsET[$monthNow -1] ." " .$yearNow .", kell " .$timeNow;
   ?>
+  .</p>
   <?php
-  echo "<p>Lehe avamise hetkel oli " .$weekdaysET[$weekdayNow]. ".</p>";
+  //echo "<p>Lehe avamise hetkel oli " .$weekdaysET[$weekdayNow - 1]. ".</p>";
   ?>
-  </p>
   <?php
   echo "<p>Lehe avamise hetkel oli " .$partOfDay. ".</p>";
   ?>
