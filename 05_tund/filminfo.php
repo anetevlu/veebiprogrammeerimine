@@ -5,7 +5,7 @@
 	$dataBase = "if19_anete_va_1";
 	
 	$filmInfoHTML = readAllFilms(); //ehk panid funktsiooni käima
-	
+	$filmsLongerThan = filmsLongerThan();
 	
 	//käsin võtta headeri sealt failist
 	require("header.php");
@@ -21,6 +21,10 @@
   <?php
   //echo "Server: " .$serverHost .", kasutaja: " .$serverUsername;
   echo $filmInfoHTML;
+  ?>
+  <hr>
+  <?php
+	echo $filmsLongerThan;
   ?>
 </body>
 </html>

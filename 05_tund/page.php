@@ -1,8 +1,18 @@
 <?php
-	$userName = "Anete Vaalu";
-	$photoDir = "../photos/";
-	$picFileTypes = ["image/jpeg", "image/png"];
+	require("../../../config_vp.php");
+	require("functions_main.php");  
+	require("functions_user.php");
+	$dataBase = "if19_anete_vp";
 	
+	$userName = "sisse logimata kasutaja";
+	
+	$notice = "";
+	$email = "";
+	$emailError = "";
+	$passwordError = "";
+	
+	$photoDir = "../photos/";
+	$picFileTypes = ["image/jpeg", "image/png"];	
 	$monthsET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
 	$weekdaysET = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
 	$hourNow = date("H");
@@ -73,6 +83,24 @@
 	$photoFile = $photoDir .$allPhotos[$picNum];
 	$randomImgHTML = '<img src="' .$photoFile .'" alt="TLÜ Terra õppehoone">';
 	//lisame lehe päise
+
+	if(isset($_POST["login"])){
+		if(isset($_POST["email"]) and !empty($_POST["email"])){
+			$email = test_input($_POST["email"]);
+		} else {
+			$emailError = " Palun sisesta E-maili aadress kasutajatunnusena!";
+		}
+		if(!isset($_POST["password"]) or strlen($_POST["password"]) < 8){
+			$passwordError = " Palun sisesta parool!";
+		}
+		if(empty($emailError) and empty($passwordError)){
+			$notice = signIn($email, $_POST["password"]);
+		} else {
+			$notice = " Sisse logimine ebaõnnestus.";
+		}
+	}
+
+
 	require("header.php");
 ?>
 <body>
@@ -99,6 +127,15 @@
   <p>Ilusat uut kooliaastat!</p>
   
   <P>Kasutame php serverit, mille kohta saab infot <a href="serverinfo.php">siit</a>!</p>
+  <hr>
+  	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"])?>">
+	<label>Kasutajatunnus (email): </label><br>
+	<input type="email" name="email" value="<?php echo $email; ?>"><span><?php echo $emailError; ?></span><br>
+	<label>Salasõna: </label><br>
+	<input name="password" type="password"><span><?php echo $passwordError; ?></span><br>
+	<input name="login" type="submit" value="logi sisse">&nbsp;<span><?php echo $notice; ?>
+	</form>
+
   <hr>
   <?php {
 	  echo $randomImgHTML;

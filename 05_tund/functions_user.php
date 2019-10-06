@@ -15,7 +15,7 @@
 		$stmt->bind_param("sssiss", $name, $surname, $birthDate, $gender, $email, $pwdhash);
 		if($stmt->execute()){
 			$notice = "Uue kasutaja loomine õnnestus!";
-		} else{
+		} else {
 			$notice = "Kasutaja salvestamisel tekkis tehniline viga: " .$stmt->error;
 		}
 
@@ -26,9 +26,42 @@
 		return $notice;
 	}
 
-function signIn($email, $password){
+	function signIn($email, $password){
+		$notice = "";
+		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["dataBase"]);
+		$stmt = $mysqli->prepare("SELECT password FROM vpusers3 WHERE email=?");
+		echo  $mysqli->error;
+		$stmt->bind_param("s", $email);
+		$stmt->bind_result($passwordFromDB);
+		if($stmt->execute()){
+			//kui päring õnnestus siis:
+			if($stmt->fetch()){
+				//kasutaja eksisteerib ABs
+				if(password_verify($passwordFromDB, $passwordFromDB)){
+					//kui salasüna matchib
+					$stmt->close();
+					$stmt = $mysqli->prepare("SELECT firstname, lastname FROM vpusers3 WHERE email=?");
+					echo $mysqli->error;
+					$stmt->bind_param("s", $email);
+					$stmt->bind_result($firstnameFromDb, $lastnameFromDb);
+					$stmt->execute();
+					$stmt->fetch();
+					$notice = "Sisse logis " .$firstnameFromDb ." " .$lastnameFromDb;
+				} else {
+					$notice = "Vale salasõna.";
+				}
+			} else {
+				$notice = " Sellist kasutajat (" .$email .") ei eksisteeri!";
+			}
+		} else {
+			$notice = " Sisse logimisel tekkis viga: " .$stmt->error;
+		}
+		$stmt->close();
+		$mysqli->close();
+		return $notice;
+	}//sisse logimise finish
 	
 	//parooli õigsuse kontroll ehk verify võrdleb sisestatut sellega mis ABs on: if(password_verify($password, $passwordFromDB)
-}
+	
 
 ?>
