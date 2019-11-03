@@ -31,9 +31,9 @@
 
 	function signIn($email, $password){
 		$notice = "";
-		$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["dataBase"]);
-		$stmt = $mysqli->prepare("SELECT password FROM vpusers3 WHERE email=?");
-		echo  $mysqli->error;
+		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["dataBase"]);
+		$stmt = $conn->prepare("SELECT password FROM vpusers3 WHERE email=?");
+		echo  $conn->error;
 		$stmt->bind_param("s", $email);
 		$stmt->bind_result($passwordFromDB);
 		if($stmt->execute()){
@@ -43,8 +43,8 @@
 				if(password_verify($password, $passwordFromDB)){ //parooli õigsuse kontroll ehk verify võrdleb sisestatut sellega mis ABs on: if(password_verify($password, $passwordFromDB)
 					//kui salasõna matchib
 					$stmt->close();
-					$stmt = $mysqli->prepare("SELECT id, firstname, lastname FROM vpusers3 WHERE email=?");
-					echo $mysqli->error;
+					$stmt = $conn->prepare("SELECT id, firstname, lastname FROM vpusers3 WHERE email=?");
+					echo $conn->error;
 					$stmt->bind_param("s", $email);
 					$stmt->bind_result($idFromDb, $firstnameFromDb, $lastnameFromDb);
 					$stmt->execute();
@@ -91,10 +91,10 @@
 	}//sisse logimise finish
 
 	//kasutajaprofiili salvestamine
-	function saveUserProfile($description, $bgcolor, $txtcolor){
+	function storeuserprofile($description, $bgColor, $txtColor){
 		$notice = "";
 		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["dataBase"]);
-		$stmt = $conn->prepare("SELECT id FROM vpuseres3profiles WHERE userid=?");
+		$stmt = $conn->prepare("SELECT id FROM vpusers3profiles WHERE userid=?");
 		echo $conn->error;
 		$stmt->bind_param("i", $_SESSION["userID"]);
 		$stmt->bind_result($idFromDb);
@@ -104,37 +104,46 @@
 			$stmt->close();
 			$stmt = $conn->prepare("UPDATE vpusers3profiles SET description =?, bgcolor = ?, txtcolor = ? WHERE userid = ?");
 			echo $conn->error;
-			$stmt->bind_param("sssi", $description $bgColor, $txtcolor, $_SESSION["userID"]);
+			$stmt->bind_param("sssi", $description, $bgColor, $txtColor, $_SESSION["userID"]);
 			if($stmt->execute()){
 				$notice = "Profiil uuendatud!";
 				$_SESSION["bgColor"] = $bgColor;
-				$_SESSION["txtColor"] = $txtcolor;
+				$_SESSION["txtColor"] = $txtColor;
 			} else {
-				$notice = "Profiili salvestamisel tekkis tõrge!";
+				$notice = "Profiili salvestamisel tekkis tõrge! " .$stmt->error;
 			}
 			//$notice = "Profiil olemas, ei salvetsanud midagi!";
 		} else {
 			//profiili pole, nüüd salvestame
-		}
+			$stmt->close();
+			$stmt = $conn->prepare("INSERT INTO vpusers3profiles (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
+			echo $conn->error;
+			$stmt->bind_param("isss", $_SESSION["userID"], $description, $bgColor, $txtColor);
+			if($stmt->execute()){
+				$notice = " Profiili salvestamine õnnestus!";
+			} else {
+				$notice = " Profiili salvestamisel tekkis tehniline viga: " .$stmt->error;
+			}
 
-		$stmt = $conn->prepare("INSERT INTO vpusers3profiles (description, bgcolor, txtcolor) VALUES(?,?,?)");
-		echo $conn->error;
-		$stmt->bind_param("sss", $mydescription, $mybgcolor, $mytxtcolor);
-		if($stmt->execute()){
-			$notice = " Profiili loomine õnnestus!";
-		} else {
-			$notice = " Profiili loomisel tekkis tehniline viga: " .$stmt->error;
 		}
-
 		$stmt->close();
 		$conn->close();
 		return $notice;
-
-
-
 	}
-	
-	
-	
 
+	function showMyDesc(){
+		$notice = null;
+		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["dataBase"]);
+		$stmt = $conn->prepare("SELECT description FROM vpusers3profiles WHERE userid=?");
+		echo $conn->error;
+		$stmt->bind_param("i", $_SESSION["userID"]);
+		$stmt->bind_result($descriptionFromDb);
+		$stmt->execute();
+		if($stmt->fetch()){
+			$notice = $descriptionFromDb;
+		}
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
 ?>
