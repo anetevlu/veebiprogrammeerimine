@@ -3,9 +3,7 @@
     require("functions_main.php");
     require("functions_user.php");
     require("functions_pic.php");
-    require("Classes/PicUpload.class.php");
-    //require("Classes/Test.class.php"); //võtan kasutusele oma klassi
-    $dataBase = "if19_anete_vp";
+    $dataBase = "if19_anete_va_1";
   
     //kui pole sisseloginud
     if(!isset($_SESSION["userID"])){
@@ -19,26 +17,16 @@
         header("Location: page.php");
         exit();
     }
-    //kasutan oma Test.class.php-d
-    //$myTest = new Test(1337); 
-    //echo "Salajane " .$myTest->secretNumber; ei saa sest salajane ju
-    //echo "Avalik " .$myTest->publicNumber;
-    //$myTest->showValues();
-    //$myTest->tellSecret(); //jällegi salajane
-    //unset ($myTest);
     
-
-
     $userName = $_SESSION["userFirstname"] ." " .$_SESSION["userLastname"];
     
     $notice = null;
     $fileName = "vp_";
     $picMaxW = 600;
     $picMaxH = 400;
-    $waterMark = "../vp_pics/vp_logo_w100_overlay.png";
-    
     //pic upload algab
-	//$target_dir = "uploads/";  
+	//$target_dir = "uploads/";
+  
     if(isset($_POST["submitPic"])){
         //var_dump($_FILES["fileToUpload"]);
         //$target_file = $pic_upload_dir_orig . basename($_FILES["fileToUpload"]["name"]);
@@ -84,14 +72,59 @@
             $notice =  "Kahjuks faili üles ei laeta!";
         // if everything is ok, try to upload file
         } else {
-            //kasutan klassi
-            $myPic = new PicUpload ($_FILES["fileToUpload"]["tmp_name"], $imageFileType);
+            
             //suuruse muutmine
-            $myPic->resizeImage($picMaxW, $picMaxH);
-            $myPic->addWatermark($waterMark);
-            //salvetsamine
-            $notice .= $myPic->saveImage($pic_upload_dir_w600 .$fileName);
-            unset ($myPic);
+            //loome ajutise "pildiobjekti" - image
+            if($imageFileType == "jpg" or $imageFileType == "jpeg"){
+                $myTempImage = imagecreatefromjpeg($_FILES["fileToUpload"]["tmp_name"]);
+            }
+            if($imageFileType == "png"){
+                $myTempImage = imagecreatefrompng($_FILES["fileToUpload"]["tmp_name"]);
+            }
+            if($imageFileType == "gif"){
+                $myTempImage = imagecreatefromgif($_FILES["fileToUpload"]["tmp_name"]);
+            }
+            //pildi originaalmõõt
+            $imageW = imagesx($myTempImage);
+            $imageH = imagesy($myTempImage);
+            //kui on liiga suur
+            if($imageW > $picMaxW or $imageH > $picMaxH){
+                //muudamegi suurust
+                if($imageW / $picMaxW > $imageH / $picMaxH){
+                    $picSizeRatio = $imageW / $picMaxW;
+                } else {
+                    $picSizeRatio = $imageH / $picMaxH;
+                }
+                //loome uue "pildiobjekti" juba uute mõõtudega
+                $newW = round($imageW / $picSizeRatio, 0);
+                $newH = round($imageH / $picSizeRatio, 0);
+                $myNewImage = setPicSize($myTempImage, $imageW, $imageH, $newW, $newH);
+                
+            }//kui liiga suur lõppeb
+            
+            //salvestan vähendatud pildi faili
+            if($imageFileType == "jpg" or $imageFileType == "jpeg"){
+                if(imagejpeg($myNewImage, $pic_upload_dir_w600 .$fileName, 90)){
+                    $notice = "Vähendatud pildi salvestamine õnnestus! ";
+                } else {
+                    $notice = "Vähendatud pildi salvestamine ebaõnnestus! ";
+                }
+            }
+            if($imageFileType == "png"){
+                if(imagepng($myNewImage, $pic_upload_dir_w600 .$fileName, 6)){
+                    $notice = "Vähendatud pildi salvestamine õnnestus! ";
+                } else {
+                    $notice = "Vähendatud pildi salvestamine ebaõnnestus! ";
+                }
+            }
+            if($imageFileType == "gif"){
+                if(imagegif($myNewImage, $pic_upload_dir_w600 .$fileName)){
+                    $notice = "Vähendatud pildi salvestamine õnnestus! ";
+                } else {
+                    $notice = "Vähendatud pildi salvestamine ebaõnnestus! ";
+                }
+            }
+            
             //kopeerin originaali
             if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
                 $notice .=  "Originaalfail ". basename( $_FILES["fileToUpload"]["name"]). " laeti üles!";
@@ -102,10 +135,15 @@
             //salvestan info andmebaasi
             $notice .= addPicData($fileName, test_input($_POST["altText"]), $_POST["privacy"]);
             
-        }        
+        }
+        
+        //tühistan pildiobjektid
+        imagedestroy($myTempImage);
+        imagedestroy($myNewImage);
+        
     }//nupuvajutuse kontroll
     
-//pic upload lõppeb
+    //pic upload lõppeb
     
     require("header.php");
 ?>
@@ -135,5 +173,5 @@
         <input name="submitPic" type="submit" value="Lae pilt üles"><span><?php echo $notice; ?></span>
         </form>
         <hr>
-</body>
+    </body>
 </html>

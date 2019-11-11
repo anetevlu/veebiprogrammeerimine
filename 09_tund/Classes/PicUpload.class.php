@@ -55,7 +55,7 @@
             return $newImage;//newImage läheb tänu returnile this->mynewimageks
         }//pildi suuruse lõpp
 
-        public function addWatermark($waterMark){
+        public function addWatermark($waterMarkFile){
             $waterMark = imagecreatefrompng($waterMarkFile);
             $waterMarkW = imagesx($waterMark);
             $waterMarkH = imagesy($waterMark);
