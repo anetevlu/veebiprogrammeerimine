@@ -1,8 +1,8 @@
 <?php
     require("../../../config_vp.php");
-    require("functions_main.php");
-    require("functions_user.php");
-    require("functions_pic.php");
+    require("functions/functions_main.php");
+    require("functions/functions_user.php");
+    require("functions/functions_pic.php");
     $dataBase = "if19_anete_vp";
   
     //kui pole sisseloginud
@@ -67,7 +67,16 @@
 		<label><input id="rate4" name="rating" type="radio" value="4">4</label>
 		<label><input id="rate5" name="rating" type="radio" value="5">5</label>
 		<input type="button" value="Salvesta hinnang" id="storeRating">
+        <br>
+        <span id="avgRating"></span>
 	</div>
+    
+    <div id="gallery" class="thumbGallery">
+	 	<img src="' .$GLOBALS["pic_upload_dir_thumb"] .$fileNameFromDb '" alt="' .$altTextFromDb '" class="thumbs" data-fn="" data-id="">
+	 	 <p>Autorinimi</p> 
+	 	 <p id="score86">Hinne: 3.33</p> 
+    </div> 
+
 	
 </div>
     <p>
@@ -82,21 +91,10 @@
         echo '<a href="?page=' .($page + 1) .'">Järgmine leht</a>' ."\n";
     } else {
         echo "<span>Järgmine leht</span> \n";
-    }
-
-   // if($privacy < 3){
-       // echo '<a href="?privacy=' .$privacy .'"Avalikud pildid ja sisseloginud kasutajale nähtavad</a> / ' ."\n";
-    //} else {
-     //   echo "<span>Privaatsed pildid</span>";
-   // }
-    
+    }   
     ?>
-    <!--<form method="GET" action = "<?php //echo htmlspecialchars($_SERVER["PHP_SELF"])?>">
-    <label><input type="radio" name="privacy" value="1,2">Avalikud ja sisselogitud kasutajale nähtavad pildid</label>
-    <label><input type="radio" name="privacy" value="3">Privaatsed pildid</label>
-    </form>
-    </p> -->
-    <div id="gallery">
+   
+   
 	  <?php //The <div> element is often used as a container for other HTML elements to style them with CSS or to perform certain tasks with JavaScript.
 		echo $publicThumbsHTML; //? on page ees see mis toimetab u nagu get
 	  ?>
