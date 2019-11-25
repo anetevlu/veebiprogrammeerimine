@@ -57,7 +57,7 @@
 	function countPublicImages($privacy){
 		$notice = null;
 		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["dataBase"]);
-		$stmt = $conn->prepare("SELECT COUNT(*) FROM vpphotos WHERE privacy<=? AND deleted IS NULL");
+		$stmt = $conn->prepare("SELECT COUNT(id) FROM vpphotos WHERE privacy<=? AND deleted IS NULL");
 		echo $conn->error;
 		$stmt->bind_param("i", $privacy);
 		$stmt->bind_result($imageCountFromDb);

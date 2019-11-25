@@ -8,6 +8,7 @@
 	$header .= "\t \t color: " .$_SESSION["txtColor"] ."\n";
 	$header .= "\t }";
 	$header .= "</style> \n";
+	$header .= $toScript;
 	$header .= "</head>";
 	echo $header;
 	?>	
